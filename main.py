@@ -8,7 +8,10 @@ def term_names_reader(): #returns term names from term_list.txt file
 		for line in texto:
 			linha = line.split()
 			if len(linha) > 0:
-				terms.append(linha[0])
+				if len(linha) == 1:
+					terms.append(linha[0])
+				elif len(linha) > 1:
+					terms.append('+'.join(linha))	
 	return terms
 
 def output_maker():
@@ -53,15 +56,16 @@ def main():
 	output_maker()
 	a=0
 	terms = term_names_reader()
+	term_num = len(terms)
 	terms = [x for x in terms if x not in done_terms_counter()]
 	a+=len(done_terms_counter())
 	for term in terms:
 		link = 'https://pubmed.ncbi.nlm.nih.gov/?term=' + term
 		page = get_website_content(link)	
 		count = extract_counts(page)
-		save_data(term, count)
+		save_data(term.replace('+',' '), count)
 		a+=1
-		print(str(a) + '/20675')
+		print(str(a) + '/' + str(term_num))
 
 main()	
 
